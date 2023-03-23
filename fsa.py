@@ -65,8 +65,11 @@ for symbol in textString:
 
 legal = int(current) in accept
 
-print(legal)
-print(linkDic)
+output = textString
+if legal == True:
+    output = output + " is a valid string"
+else:
+    output = output + " is not a valid string"
 #create graphic of fsa using fsa
 
 
@@ -76,6 +79,7 @@ root.geometry("400x600")
 c = Canvas(root, width = 400, height = 600, borderwidth = 0, highlightthickness = 0, bg = "black")
 c.pack()
 
+c.create_text(250, 20, text = output, fill = "white")
 #create circles for FSA
 
 radius = 30
@@ -94,12 +98,24 @@ for i in range(numOfStates):
 #show connections for FSA
 temp = 1
 radius = radius * 2
-for i in linkDic:
+c.create_line(radius + 30, radius/2, 50, radius/2, arrow = LAST, width = 2, fill = "white")
+for i in range(len(links)):
+    currentState = int(links[i][1])
+    nextState = int(links[i][3])
+    #if next state == current state
+    if nextState == currentState:
+        c.create_arc((temp * radius) + 60, (temp * radius) - 50, (temp * radius) - 80, (temp * radius) - 20, start = 90, extent = -180, outline = "white", width = 2, style = "arc")
+        c.create_text((temp * radius) + 65, (temp * radius) - 45, text = links[i][5], fill = "white")
     #if next state is +1 from current state
-    c.create_line((temp * radius) - 15, (temp * radius) - 15, (temp * radius) + 15, (temp * radius) + 15, arrow = LAST, width = 2, fill = "white")
-    temp = temp + 1
-
-
+    if nextState == (currentState + 1):
+        c.create_line((temp * radius) - 15, (temp * radius) - 15, (temp * radius) + 15, (temp * radius) + 15, arrow = LAST, width = 2, fill = "white")
+        c.create_text((temp * radius) + 6, (temp * radius) - 6, text = links[i][5], fill = "white")
+        temp = temp + 1
+    #if next state is behind cirrent state
+    if nextState < currentState:
+        c.create_line((temp * radius) - 25, (temp * radius), radius + 30, (temp * radius), width = 2, fill = "white")
+        c.create_line(temp * 18, temp * 22, temp * 18, radius * temp, arrow = FIRST, width = 2, fill = "white")
+        c.create_text((temp * 18) - 6, (temp * 22) + 20, text = links[i][5], fill = "white")
 
 
 root.mainloop()
